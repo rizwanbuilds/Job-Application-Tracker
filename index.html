@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Job Application Tracker</title>
+    <script src="js/export.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Smart Job Application Tracker</h1>
+            <p>Track applications, interviews, offers and analytics.</p>
+        </header>
+
+        <!-- Dashboard -->
+        <section class="dashboard">
+
+            <div class="card">
+                <h3>Total Applications</h3>
+                <p id="totalApplications">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Interviews</h3>
+                <p id="totalInterviews">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Offers</h3>
+                <p id="totalOffers">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Response Rate</h3>
+                <p id="responseRate">0%</p>
+            </div>
+
+        </section>
+
+        <!-- Application Form -->
+        <section class="form-section">
+
+            <h2>Add New Application</h2>
+
+            <form id="jobForm">
+
+                <input
+                    type="text"
+                    id="company"
+                    placeholder="Company Name"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="role"
+                    placeholder="Job Role"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="platform"
+                    placeholder="Platform (LinkedIn, Naukri...)"
+                    required
+                >
+
+                <input
+                    type="date"
+                    id="appliedDate"
+                    required
+                >
+
+                <select id="status">
+                    <option value="Applied">Applied</option>
+                    <option value="Assessment">Assessment</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Offer">Offer</option>
+                </select>
+
+                <input
+                    type="date"
+                    id="followUpDate"
+                >
+
+                <input
+                    type="text"
+                    id="resumeVersion"
+                    placeholder="Resume Version"
+                >
+
+                <textarea
+                    id="notes"
+                    placeholder="Notes"
+                ></textarea>
+
+                <button type="submit">
+                    Add Application
+                </button>
+
+            </form>
+
+        </section>
+        <button onclick="exportToCSV()">
+            Export CSV
+        </button>
+        <!-- Search -->
+        <section class="search-section">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search Company or Role"
+            >
+
+        </section>
+
+        <!-- Applications Table -->
+        <section>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Platform</th>
+                        <th>Applied Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="jobTableBody">
+
+                </tbody>
+
+            </table>
+
+        </section>
+        <section class="chart-section">
+            <h2>Application Analytics</h2>
+        
+            <canvas id="statusChart"></canvas>
+        </section>
+
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/app.js"></script>
+    
+
+</body>
+</html>
+<select id="statusFilter">
+    <option value="All">All Status</option>
+    <option value="Applied">Applied</option>
+    <option value="Assessment">Assessment</option>
+    <option value="Interview">Interview</option>
+    <option value="Offer">Offer</option>
+    <option value="Rejected">Rejected</option>
+</select>
+<input
+    type="text"
+    id="searchInput"
+    placeholder="Search Company or Role"
+    onkeyup="displayJobs()"
+>
+
+<select id="statusFilter" onchange="displayJobs()">
+    <option value="All">All Status</option>
+    <option value="Applied">Applied</option>
+    <option value="Assessment">Assessment</option>
+    <option value="Interview">Interview</option>
+    <option value="Offer">Offer</option>
+    <option value="Rejected">Rejected</option>
+</select>
