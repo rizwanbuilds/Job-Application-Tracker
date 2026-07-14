@@ -1,4 +1,9 @@
-<img width="1898" height="1020" alt="Screenshot 2026-07-14 072652" src="https://github.com/user-attachments/assets/902f2ef5-63a9-44cf-8393-8b8ded0dfb94" /><img width="1898" height="1020" alt="Screenshot 2026-07-14 072652" src="https://github.com/user-attachments/assets/6cda7bcb-e1a0-45f9-8892-20fc5fa40bd3" /># Smart Job Application Tracker
+<img width="1898" height="1020" alt="Screenshot 2026-07-14 072652" src="https://github.com/user-attachments/assets/6cda7bcb-e1a0-45f9-8892-20fc5fa40bd3" /># Smart 
+<img width="1667" height="865" alt="Screenshot 2026-07-14 072812" src="https://github.com/user-attachments/assets/f1011d4b-6481-4d08-9ece-16b535e0fdac" />
+
+<img width="1643" height="600" alt="Screenshot 2026-07-14 072801" src="https://github.com/user-attachments/assets/9a1710b2-679c-40d4-ac96-8e1b5e668a43" />
+
+Job Application Tracker
 
 Keeping track of dozens of job applications across LinkedIn, Naukri, company portals, and referrals can quickly become messy. I built this project to organize the application process in one place and make it easier to monitor progress throughout the hiring journey.
 
