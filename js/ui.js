@@ -1,37 +1,48 @@
-function displayJobs() {
+let editingId = null;
 
-    const tableBody = document.getElementById("jobTableBody");
+let allJobs = [];
+
+
+function displayJobs(jobs = allJobs) {
+
+    allJobs = jobs;
+
+    const tableBody =
+        document.getElementById("jobTableBody");
+
     tableBody.innerHTML = "";
 
-    const searchTerm = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase();
 
-    const selectedStatus = document
-        .getElementById("statusFilter")
-        .value;
+    const searchTerm =
+        document.getElementById("searchInput")
+            .value
+            .toLowerCase();
 
-    const jobs = (JSON.parse(localStorage.getItem("jobs")) || [])
-        .filter(job => {
+    const selectedStatus =
+        document.getElementById("statusFilter")
+            .value;
 
-            const matchesSearch =
-                job.company.toLowerCase().includes(searchTerm) ||
-                job.role.toLowerCase().includes(searchTerm);
 
-            const matchesStatus =
-                selectedStatus === "All" ||
-                job.status === selectedStatus;
+    const filteredJobs = jobs.filter(job => {
 
-            return matchesSearch && matchesStatus;
-            
-        });
+        const matchesSearch =
+            job.company.toLowerCase().includes(searchTerm) ||
+            job.role.toLowerCase().includes(searchTerm);
 
-    jobs.forEach(job => {
+        const matchesStatus =
+            selectedStatus === "All" ||
+            job.status === selectedStatus;
+
+        return matchesSearch && matchesStatus;
+    });
+
+
+    filteredJobs.forEach(job => {
 
         let statusClass = "";
 
         switch (job.status) {
+
             case "Applied":
                 statusClass = "status-applied";
                 break;
@@ -53,9 +64,11 @@ function displayJobs() {
                 break;
         }
 
+
         const row = `
             <tr>
                 <td>${job.company}</td>
+
                 <td>${job.role}</td>
 
                 <td>
@@ -65,9 +78,11 @@ function displayJobs() {
                 </td>
 
                 <td>${job.platform}</td>
+
                 <td>${job.appliedDate}</td>
 
                 <td>
+
                     <button onclick="editJob(${job.id})">
                         Edit
                     </button>
@@ -75,6 +90,7 @@ function displayJobs() {
                     <button onclick="deleteJob(${job.id})">
                         Delete
                     </button>
+
                 </td>
             </tr>
         `;
@@ -82,45 +98,92 @@ function displayJobs() {
         tableBody.innerHTML += row;
     });
 
-    updateDashboard();
-    updateCharts();
+
+    updateDashboard(jobs);
+
+    updateCharts(jobs);
 }
 
 
-function deleteJob(id) {
+async function deleteJob(id) {
 
-    let jobs =
-        JSON.parse(localStorage.getItem("jobs")) || [];
+    if (!confirm("Delete this application?")) {
+        return;
+    }
 
-    jobs = jobs.filter(job => job.id !== id);
 
-    localStorage.setItem(
-        "jobs",
-        JSON.stringify(jobs)
-    );
+    try {
 
-    displayJobs();
+        const response = await fetch(
+            `/api/jobs/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        if (!response.ok) {
+            throw new Error("Delete failed");
+        }
+
+
+        loadJobs();
+
+
+    } catch (error) {
+
+        alert("Could not delete application.");
+
+        console.log(error);
+    }
 }
 
 
 function editJob(id) {
 
-    const jobs =
-        JSON.parse(localStorage.getItem("jobs")) || [];
-
     const job =
-        jobs.find(job => job.id === id);
+        allJobs.find(job => job.id === id);
 
-    if (!job) return;
 
-    document.getElementById("company").value = job.company;
-    document.getElementById("role").value = job.role;
-    document.getElementById("platform").value = job.platform;
-    document.getElementById("appliedDate").value = job.appliedDate;
-    document.getElementById("status").value = job.status;
-    document.getElementById("followUpDate").value = job.followUpDate;
-    document.getElementById("resumeVersion").value = job.resumeVersion;
-    document.getElementById("notes").value = job.notes;
+    if (!job) {
+        return;
+    }
 
-    deleteJob(id);
+
+    document.getElementById("company").value =
+        job.company;
+
+    document.getElementById("role").value =
+        job.role;
+
+    document.getElementById("platform").value =
+        job.platform;
+
+    document.getElementById("appliedDate").value =
+        job.appliedDate;
+
+    document.getElementById("status").value =
+        job.status;
+
+    document.getElementById("followUpDate").value =
+        job.followUpDate;
+
+    document.getElementById("resumeVersion").value =
+        job.resumeVersion;
+
+    document.getElementById("notes").value =
+        job.notes;
+
+
+    editingId = id;
+
+
+    document.querySelector("#jobForm button").textContent =
+        "Update Application";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }

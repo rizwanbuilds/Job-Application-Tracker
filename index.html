@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Smart Job Application Tracker</title>
-    <script src="js/export.js"></script>
-    <script src="js/charts.js"></script>
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
+
 <body>
 
     <div class="container">
 
+        <!-- Header -->
         <header>
             <h1>Smart Job Application Tracker</h1>
             <p>Track applications, interviews, offers and analytics.</p>
         </header>
+
 
         <!-- Dashboard -->
         <section class="dashboard">
@@ -44,6 +51,7 @@
             </div>
 
         </section>
+
 
         <!-- Application Form -->
         <section class="form-section">
@@ -110,19 +118,38 @@
             </form>
 
         </section>
+
+
+        <!-- Export -->
         <button onclick="exportToCSV()">
             Export CSV
         </button>
-        <!-- Search -->
+
+
+        <!-- Search and Filter -->
         <section class="search-section">
 
             <input
                 type="text"
                 id="searchInput"
                 placeholder="Search Company or Role"
+                onkeyup="displayJobs()"
             >
 
+            <select
+                id="statusFilter"
+                onchange="displayJobs()"
+            >
+                <option value="All">All Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Assessment">Assessment</option>
+                <option value="Interview">Interview</option>
+                <option value="Offer">Offer</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+
         </section>
+
 
         <!-- Applications Table -->
         <section>
@@ -141,50 +168,34 @@
                 </thead>
 
                 <tbody id="jobTableBody">
-
                 </tbody>
 
             </table>
 
         </section>
+
+
+        <!-- Analytics -->
         <section class="chart-section">
+
             <h2>Application Analytics</h2>
-        
+
             <canvas id="statusChart"></canvas>
+
         </section>
 
     </div>
 
+
+    <!-- JavaScript -->
     <script src="js/storage.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/validation.js"></script>
     <script src="js/analytics.js"></script>
     <script src="js/export.js"></script>
+    <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
-    
 
 </body>
-</html>
-<select id="statusFilter">
-    <option value="All">All Status</option>
-    <option value="Applied">Applied</option>
-    <option value="Assessment">Assessment</option>
-    <option value="Interview">Interview</option>
-    <option value="Offer">Offer</option>
-    <option value="Rejected">Rejected</option>
-</select>
-<input
-    type="text"
-    id="searchInput"
-    placeholder="Search Company or Role"
-    onkeyup="displayJobs()"
->
 
-<select id="statusFilter" onchange="displayJobs()">
-    <option value="All">All Status</option>
-    <option value="Applied">Applied</option>
-    <option value="Assessment">Assessment</option>
-    <option value="Interview">Interview</option>
-    <option value="Offer">Offer</option>
-    <option value="Rejected">Rejected</option>
-</select>
+</html>

@@ -1,29 +1,27 @@
-function exportToCSV() {
+async function exportToCSV() {
 
-    const jobs =
-        JSON.parse(localStorage.getItem("jobs")) || [];
+    try {
 
-    if (jobs.length === 0) {
-        alert("No data to export.");
-        return;
-    }
+        const response = await fetch("/api/jobs");
+        const jobs = await response.json();
 
-    const headers = [
-        "Company",
-        "Role",
-        "Platform",
-        "Applied Date",
-        "Status",
-        "Follow Up Date",
-        "Resume Version",
-        "Notes"
-    ];
+        if (jobs.length === 0) {
+            alert("No data to export.");
+            return;
+        }
 
-    let csv =
-        headers.join(",") + "\n";
+        const headers = [
+            "Company",
+            "Role",
+            "Platform",
+            "Applied Date",
+            "Status",
+            "Follow Up Date",
+            "Resume Version",
+            "Notes"
+        ];
 
-    jobs.forEach(job => {
-        csv += [
+        const rows = jobs.map(job => [
             job.company,
             job.role,
             job.platform,
@@ -32,21 +30,35 @@ function exportToCSV() {
             job.followUpDate,
             job.resumeVersion,
             job.notes
-        ].join(",") + "\n";
-    });
+        ].map(value =>
+            `"${String(value || "").replace(/"/g, '""')}"`
+        ).join(","));
 
-    const blob =
-        new Blob([csv],
-        { type: "text/csv" });
+        const csv = [
+            headers.join(","),
+            ...rows
+        ].join("\n");
 
-    const url =
-        window.URL.createObjectURL(blob);
+        const blob = new Blob(
+            [csv],
+            { type: "text/csv" }
+        );
 
-    const a =
-        document.createElement("a");
+        const url = URL.createObjectURL(blob);
 
-    a.href = url;
-    a.download = "job_applications.csv";
+        const a = document.createElement("a");
 
-    a.click();
+        a.href = url;
+        a.download = "job_applications.csv";
+
+        a.click();
+
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+        alert("Could not export applications.");
+        console.log(error);
+
+    }
 }
