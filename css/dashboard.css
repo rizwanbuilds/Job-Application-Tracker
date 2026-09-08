@@ -1,0 +1,23 @@
+.reminders {
+    margin-top: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.reminders h2 {
+    margin-bottom: 15px;
+}
+
+.reminder {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 4px solid #ff9800;
+    background: #fff8e1;
+    border-radius: 5px;
+}
+
+.reminder:last-child {
+    margin-bottom: 0;
+}
