@@ -4,83 +4,60 @@
 <img width="1643" height="600" alt="Screenshot 2026-07-14 072801" src="https://github.com/user-attachments/assets/9a1710b2-679c-40d4-ac96-8e1b5e668a43" />
 
 Job Application Tracker
+# Smart Job Application Tracker
 
-Keeping track of dozens of job applications across LinkedIn, Naukri, company portals, and referrals can quickly become messy. I built this project to organize the application process in one place and make it easier to monitor progress throughout the hiring journey.
-
-The application allows users to save job applications, track their status, search and filter records, and view useful statistics about their job hunt.
+A simple full-stack web application to manage and track job applications in one place.
 
 ## Features
 
-- Add new job applications
-- Edit and update application details
+- Add job applications
+- Edit applications
 - Delete applications
-- Search by company name or job role
-- Filter applications by status
-- Dashboard showing application statistics
-- Duplicate application detection
-- CSV export for further analysis
-- Persistent data storage using browser Local Storage
-
-## Application Stages Supported
-
-- Applied
-- Assessment
-- Interview
-- Offer
-- Rejected
+- Search applications
+- Filter by status
+- Track interviews and offers
+- Follow-up date tracking
+- Resume version tracking
+- Application analytics
+- Status chart
+- Export applications to CSV
+- Persistent data storage using JSON
+- REST API using Node.js and Express
 
 ## Tech Stack
 
-- HTML5
-- CSS3
-- JavaScript (ES6)
-- Browser Local Storage API
+### Frontend
+- HTML
+- CSS
+- JavaScript
+- Chart.js
+
+### Backend
+- Node.js
+- Express.js
+- REST API
+- JSON file storage
 
 ## Project Structure
 
 ```text
-job-application-tracker/
+Job-Application-Tracker/
 │
-├── index.html
+├── assets/
 ├── css/
 ├── js/
-├── assets/
+├── backend/
+│   ├── server.js
+│   ├── jobs.json
+│   └── package.json
+│
+├── index.html
+├── .gitignore
 └── README.md
-```
-
-## Running the Project
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/smart-job-application-tracker.git
-```
-
-2. Open the project folder in VS Code.
-
-3. Install the Live Server extension if you don't already have it.
-
-4. Open `index.html` using Live Server.
-
-The application will run locally in your browser.
-
-## Why I Built This
-
-While applying for internships and entry-level roles, I found myself tracking applications in spreadsheets and notes, which quickly became difficult to manage. This project was built as an attempt to solve that problem with a simple and interactive web application.
-
-## Future Improvements
-
-Some features I plan to add in future versions include:
-- Tableau integration
-- Follow-up reminders
-- Dark mode
-- AI-powered resume matching
-- Interview preparation suggestions
-- Resume version tracking
 
 ## Author
 
 **Rizwan Khan**
 
-LinkedIn:  
+LinkedIn:  https://www.linkedin.com/in/rizwan-khan-0b3804251/
 :contentReference[oaicite:0]{index=0}
