@@ -1,32 +1,48 @@
 async function analyzeJob() {
 
+    const resumeFile =
+        document.getElementById("resumeFile").files[0];
+
     const jobDescription =
         document.getElementById("jobDescription").value.trim();
 
     const result =
         document.getElementById("aiResult");
 
-    if (!jobDescription) {
-        result.innerHTML = "<p>Please paste a job description.</p>";
+    if (!resumeFile) {
+        result.innerHTML =
+            "<p class='ai-error'>Please upload your resume PDF.</p>";
         return;
     }
 
-    result.innerHTML = "<p>🤖 AI is analyzing...</p>";
+    if (resumeFile.type !== "application/pdf") {
+        result.innerHTML =
+            "<p class='ai-error'>Please upload a PDF file.</p>";
+        return;
+    }
+
+    if (!jobDescription) {
+        result.innerHTML =
+            "<p class='ai-error'>Please paste a job description.</p>";
+        return;
+    }
+
+    result.innerHTML = `
+        <div class="ai-loading">
+            🤖 Reading your resume and analyzing the job...
+        </div>
+    `;
+
+    const formData = new FormData();
+
+    formData.append("resume", resumeFile);
+    formData.append("jobDescription", jobDescription);
 
     try {
 
         const response = await fetch("/api/ai-match", {
-
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                jobDescription
-            })
-
+            body: formData
         });
 
         const data = await response.json();
@@ -36,16 +52,24 @@ async function analyzeJob() {
         }
 
         result.innerHTML = `
-            <div class="ai-result">
-                <h3>AI Job Match</h3>
+            <div class="ai-result-card">
+
+                <div class="ai-result-title">
+                    <h3>🎯 AI Job Match Result</h3>
+                </div>
+
                 <pre>${data.result}</pre>
+
             </div>
         `;
 
     } catch (error) {
 
-        result.innerHTML =
-            `<p>AI error: ${error.message}</p>`;
+        result.innerHTML = `
+            <p class="ai-error">
+                AI error: ${error.message}
+            </p>
+        `;
 
     }
 }

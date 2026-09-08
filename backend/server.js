@@ -1,170 +1,302 @@
-require("dotenv").config();
-
 const express = require("express");
-const fs = require("fs");
 const path = require("path");
+const fs = require("fs");
+const dotenv = require("dotenv");
+const multer = require("multer");
+const { PDFParse } = require("pdf-parse");
 const { GoogleGenAI } = require("@google/genai");
+
+dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
-const FILE = path.join(__dirname, "jobs.json");
-const FRONTEND = path.join(__dirname, "..");
+const jobsFile = path.join(__dirname, "jobs.json");
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
 
-app.use(express.json());
-app.use(express.static(FRONTEND));
-
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(FRONTEND, "index.html"));
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
 });
 
+app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "..")));
+
+
+// =========================
+// JOB APPLICATIONS
+// =========================
+
+function readJobs() {
+
+    if (!fs.existsSync(jobsFile)) {
+        return [];
+    }
+
+    const data = fs.readFileSync(jobsFile, "utf8");
+
+    return data ? JSON.parse(data) : [];
+}
+
+
+function saveJobs(jobs) {
+
+    fs.writeFileSync(
+        jobsFile,
+        JSON.stringify(jobs, null, 2)
+    );
+}
+
+
+// GET ALL JOBS
 
 app.get("/api/jobs", (req, res) => {
 
-    const jobs =
-        JSON.parse(fs.readFileSync(FILE, "utf8"));
+    const jobs = readJobs();
 
     res.json(jobs);
 });
 
 
+// ADD JOB
+
 app.post("/api/jobs", (req, res) => {
 
-    const jobs =
-        JSON.parse(fs.readFileSync(FILE, "utf8"));
+    const jobs = readJobs();
 
-    jobs.push(req.body);
+    const job = {
+        ...req.body,
+        id: req.body.id || Date.now()
+    };
 
-    fs.writeFileSync(
-        FILE,
-        JSON.stringify(jobs, null, 2)
-    );
+    jobs.push(job);
 
-    res.json({
-        message: "Job saved successfully",
-        job: req.body
-    });
+    saveJobs(jobs);
+
+    res.status(201).json(job);
 });
 
 
+// UPDATE JOB
+
 app.put("/api/jobs/:id", (req, res) => {
 
-    const jobs =
-        JSON.parse(fs.readFileSync(FILE, "utf8"));
+    const jobs = readJobs();
+
+    const id = Number(req.params.id);
 
     const index = jobs.findIndex(
-        job => job.id === Number(req.params.id)
+        job => Number(job.id) === id
     );
 
     if (index === -1) {
 
         return res.status(404).json({
-            message: "Job not found"
+            message: "Application not found"
         });
 
     }
 
-    jobs[index] = req.body;
+    jobs[index] = {
+        ...jobs[index],
+        ...req.body,
+        id: jobs[index].id
+    };
 
-    fs.writeFileSync(
-        FILE,
-        JSON.stringify(jobs, null, 2)
-    );
+    saveJobs(jobs);
 
-    res.json({
-        message: "Job updated successfully",
-        job: req.body
-    });
+    res.json(jobs[index]);
 });
 
+
+// DELETE JOB
 
 app.delete("/api/jobs/:id", (req, res) => {
 
-    const jobs =
-        JSON.parse(fs.readFileSync(FILE, "utf8"));
+    const jobs = readJobs();
 
-    const newJobs = jobs.filter(
-        job => job.id !== Number(req.params.id)
+    const id = Number(req.params.id);
+
+    const updatedJobs = jobs.filter(
+        job => Number(job.id) !== id
     );
 
-    fs.writeFileSync(
-        FILE,
-        JSON.stringify(newJobs, null, 2)
-    );
+    if (updatedJobs.length === jobs.length) {
+
+        return res.status(404).json({
+            message: "Application not found"
+        });
+
+    }
+
+    saveJobs(updatedJobs);
 
     res.json({
-        message: "Job deleted successfully"
+        message: "Application deleted successfully"
     });
 });
 
 
-/* AI Job Match */
+// =========================
+// AI JOB MATCH
+// =========================
 
-app.post("/api/ai-match", async (req, res) => {
+app.post(
+    "/api/ai-match",
+    upload.single("resume"),
+    async (req, res) => {
 
-    try {
+        try {
 
-        const { jobDescription } = req.body;
+            const { jobDescription } = req.body;
 
-        if (!jobDescription) {
+            // Check resume
 
-            return res.status(400).json({
-                message: "Job description is required"
+            if (!req.file) {
+
+                return res.status(400).json({
+                    message: "Resume PDF is required"
+                });
+
+            }
+
+
+            // Check job description
+
+            if (!jobDescription) {
+
+                return res.status(400).json({
+                    message: "Job description is required"
+                });
+
+            }
+
+
+            // Check PDF
+
+            if (req.file.mimetype !== "application/pdf") {
+
+                return res.status(400).json({
+                    message: "Please upload a PDF file"
+                });
+
+            }
+
+
+            // =========================
+            // READ RESUME PDF
+            // =========================
+
+            const parser = new PDFParse({
+                data: req.file.buffer
             });
 
-        }
+            const pdf = await parser.getText();
 
-        const prompt = `
-Analyze this job description and give a simple job match analysis.
+            await parser.destroy();
 
-Job Description:
+            const resumeText = pdf.text;
+
+
+            if (!resumeText.trim()) {
+
+                return res.status(400).json({
+                    message:
+                        "Could not extract text from this PDF. Please upload a text-based resume PDF."
+                });
+
+            }
+
+
+            // =========================
+            // AI PROMPT
+            // =========================
+
+            const prompt = `
+You are an AI job matching assistant.
+
+Compare the candidate's resume with the job description.
+
+CANDIDATE RESUME:
+${resumeText}
+
+JOB DESCRIPTION:
 ${jobDescription}
 
-Give the response in this format:
+Analyze how closely the candidate matches the job.
+
+Use exactly this format:
 
 MATCH SCORE: XX%
 
 STRONG SKILLS:
-- skill 1
-- skill 2
-- skill 3
+- skill
+- skill
+- skill
 
 MISSING OR IMPROVE:
-- skill 1
-- skill 2
-- skill 3
+- skill
+- skill
+- skill
+
+MATCH SUMMARY:
+Give 2-3 short sentences explaining why the candidate matches the job.
 
 ADVICE:
-Give 2-3 short sentences of useful advice.
+Give 2-3 short sentences explaining what the candidate should improve.
 
-Do not invent information about the candidate.
+IMPORTANT RULES:
+- Only use information actually found in the candidate resume.
+- Do not invent skills, projects, education or experience.
+- Compare the resume directly with the job requirements.
+- Give a realistic score between 0% and 100%.
+- Consider both required skills and relevant experience/projects.
+- Keep the response simple and easy to understand.
 `;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt
-        });
 
-        res.json({
-            result: response.text
-        });
+            // =========================
+            // GEMINI
+            // =========================
 
-    } catch (error) {
+            const response =
+                await ai.models.generateContent({
 
-        console.log(error);
+                    model: "gemini-3.6-flash",
 
-        res.status(500).json({
-            message: "AI analysis failed. Check your API key and try again."
-        });
+                    contents: prompt
+
+                });
+
+
+            res.json({
+                result: response.text
+            });
+
+        } catch (error) {
+
+            console.log("AI ERROR:", error);
+
+            res.status(500).json({
+                message:
+                    "Resume analysis failed. Please try again."
+            });
+
+        }
 
     }
-});
+);
 
+
+// =========================
+// START SERVER
+// =========================
 
 app.listen(PORT, () => {
 

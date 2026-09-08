@@ -241,29 +241,61 @@
 
         <!-- AI Job Match -->
 
-        <section class="ai-section">
+<!-- AI Job Match -->
+<section class="ai-section">
 
-            <h2>🤖 AI Job Match</h2>
+    <div class="ai-header">
+        <h2>🤖 AI Job Match</h2>
+        <p>
+            Upload your resume and compare it with a job description using AI.
+        </p>
+    </div>
 
-            <p>
-                Paste a job description to see how well your profile matches it.
-            </p>
+    <div class="ai-inputs">
+
+        <div class="ai-input-box">
+
+            <label for="resumeFile">
+                📄 Upload Resume (PDF)
+            </label>
+
+            <input
+                type="file"
+                id="resumeFile"
+                accept=".pdf,application/pdf"
+            >
+
+            <small>
+                PDF only • Your resume is used for this analysis.
+            </small>
+
+        </div>
+
+        <div class="ai-input-box">
+
+            <label for="jobDescription">
+                💼 Job Description
+            </label>
 
             <textarea
                 id="jobDescription"
                 placeholder="Paste the job description here..."
             ></textarea>
 
-            <button onclick="analyzeJob()">
-                Analyze Job Match
-            </button>
-
-            <div id="aiResult"></div>
-
-        </section>
+        </div>
 
     </div>
 
+    <button
+        class="ai-button"
+        onclick="analyzeJob()"
+    >
+        ✨ Analyze Job Match
+    </button>
+
+    <div id="aiResult"></div>
+
+</section>
 
     <!-- JavaScript -->
 
