@@ -3,57 +3,119 @@
 
 <img width="1643" height="600" alt="Screenshot 2026-07-14 072801" src="https://github.com/user-attachments/assets/9a1710b2-679c-40d4-ac96-8e1b5e668a43" />
 
-Job Application Tracker
-# Smart Job Application Tracker
+# 🚀 Smart Job Application Tracker
 
-A simple full-stack web application to manage and track job applications in one place.
+A simple and practical web application to manage job applications, track application status, follow-ups, interviews, and offers in one place.
 
-## Features
+The project also includes an **AI Job Match feature** that allows users to upload their resume as a PDF and compare it with a job description.
 
-- Add job applications
-- Edit applications
+---
+
+## ✨ Features
+
+### 📋 Job Application Management
+- Add new job applications
+- Edit existing applications
 - Delete applications
-- Search applications
-- Filter by status
-- Track interviews and offers
-- Follow-up date tracking
-- Resume version tracking
-- Application analytics
-- Status chart
-- Export applications to CSV
-- Persistent data storage using JSON
-- REST API using Node.js and Express
+- Track company and job role
+- Store application date
+- Store application platform
+- Add notes
+- Select resume version used
 
-## Tech Stack
+### 🔎 Search & Filter
+- Search applications by company or role
+- Filter applications by status
+
+### 📊 Dashboard & Analytics
+- Total applications
+- Total interviews
+- Total offers
+- Response rate
+- Follow-up reminders
+
+### 📅 Follow-up Tracking
+- Add follow-up dates
+- See applications requiring follow-up
+- Identify overdue follow-ups
+
+### 📈 Application Chart
+- Visualize application progress and status
+
+### 📤 Data Export
+- Export application data as CSV
+- Export application data as JSON
+
+### 🤖 AI Job Match
+- Upload your resume in PDF format
+- Paste a job description
+- AI reads the resume
+- Compares resume skills with the job requirements
+- Provides a job match score
+- Shows strong/matching skills
+- Shows missing skills
+- Provides improvement suggestions
+- Gives a short summary and application advice
+
+---
+
+## 🛠️ Technologies Used
 
 ### Frontend
 - HTML
 - CSS
 - JavaScript
-- Chart.js
 
 ### Backend
 - Node.js
 - Express.js
-- REST API
-- JSON file storage
 
-## Project Structure
+### AI
+- Google Gemini API
+
+### Other Tools
+- Multer
+- PDF Parse
+- JSON
+- REST API
+- Git & GitHub
+
+---
+
+## 📁 Project Structure
 
 ```text
-Job-Application-Tracker/
+job application tracker/
 │
 ├── assets/
+│   ├── icons/
+│   └── images/
+│
 ├── css/
+│   ├── dashboard.css
+│   ├── responsive.css
+│   └── style.css
+│
+├── data/
+│
 ├── js/
+│   ├── analytics.js
+│   ├── app.js
+│   ├── charts.js
+│   ├── export.js
+│   ├── storage.js
+│   ├── ui.js
+│   └── ai.js
+│
 ├── backend/
 │   ├── server.js
 │   ├── jobs.json
-│   └── package.json
+│   ├── package.json
+│   └── package-lock.json
 │
 ├── index.html
-├── .gitignore
-└── README.md
+├── README.md
+└── .gitignore
 
 ## Author
 
